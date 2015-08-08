@@ -51,9 +51,24 @@ public Signed-Subsapce-Key und der beschreibende Text, werden unabhängig
 voneinander gehasht, anschließend miteinander geXOR't und dann wieder gehasht.
 
 \subsubsection{CHK - Content-Hash-Key}
-Der Content-Hash-Key hasht den Inhalt der Datei und representiert den Inhalt
-anhand des Hashes. Jede Datei erhält dadurch einen pseudo einzigartigen
-Schlüssel. Zusätzlich wird eine Datei mit einem zufällig generiertem Schlüssel
-verschlüsselt.
-Um Zugriff auf die Datei zu vergeben, veröffentlich der Nutzer den
-Content-Hash-Key und den beschreibendem Text.
+Der Content-Hash-Key representiert den Inhalt der Datei in Form eines Hashes.
+Jede Datei erhält dadurch einen pseudo einzigartigen Schlüssel. Zusätzlich wird
+eine Datei mit einem zufällig generiertem Schlüssel verschlüsselt.
+Um Zugriff auf die Datei zu ermöglichen, veröffentlicht der Nutzer den
+Content-Hash-Key und den dazu gehörigen Schlüssel zur Entschlüsselung.
+
+Eine Datei kann kann mit dem Content-Hash-Key durch den Author aktualisiert
+werden. Dazu wird ein neuer Content-Hash-Key erzeugt und unter dem
+Signed-Subspace-Key abgelegt. Der neue Schlüssel muss sich vom Alten
+unterscheiden. Sollte die neue Datei einen Knoten ereichen, der noch auf die
+alte Version verweist, ensteht eine Kollision, die dazu führt, dass der Knoten
+die Signatur der neuen Version überprüft, mit der alten Version validiert und
+auf die neue Version verweißt. Der Signed-Subspace-Key
+verweist immer auf die aktuellste Version der Datei. Die alte Version kann
+weiterhin erreicht werden, indem direkt der Content-Hash-Key angefragt wird.
+Wird die ältere Version über einen bestimmten Zeitraum nicht mehr aufgerufen,
+kann diese vom Freenet entfernt werden.
+
+Eine weiter Funktion vom Content-Hash-Key ist das Aufteilen einer Datei
+in mehrere Teildatei, um z.B. große Daten mit weniger Bandbreite über das
+Netzwerk zu verschicken.
