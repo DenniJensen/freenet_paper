@@ -1,32 +1,33 @@
 \section{Daten Austausch}
 \subsection{Daten Empfangen}
 Um Daten im Freenet zu empfangen, wählt oder berechnet der Nutzer einen Hash.
-Dieser Hash wird dann als Request Nachricht über eine Kette von Request
-versendet mit dem Start des eigenen Knotens und einer gegebenen hops-to-live.
-Der Knoten, bei dem die Request-Nachricht ankommt, überprüft ob der gesuchte
-Hash schon vorhanden ist. Sollte die Datei gefunden werden, sendet der Knoten
-die Datei zurück. Sollte der gesuchte Schlüssel nicht vorhanden sein, schaut
-der Knoten in der Routingtabelle nach einem nächsten Knoten, um den Request
-weiterzuleiten und verringert die hops-to-live um eins.
-Dieser Vorgang wiederholt sich solange bis der hops-to-live Wert auf null
-gefallen ist.
-Kann ein Knoten einen Request nicht mehr weiterleiten, dann wird der vorherige
-Knoten benachrichtigt und dieser sucht sich einen neuen Knoten aus der
-Routingtabelle und versendet den Request neu.
-Sollte der hops-to-live Wert auf null fallen und es wurde keine Datei mit dem
-Schlüssel gefunden, wird ein Fehlernachricht bis zum Anfang der Kette
-versendet.
+Dieser Hash wird dann als Request Nachricht über eine Kette von Request und
+mit einer gegebenen hops-to-live versendet. Als Start dient der eigene Knoten.
+Der Knoten bei dem die Request-Nachricht ankommt, überprüft ob der gesuchte
+Hash vorhanden ist. Sollte die Datei gefunden werden, sendet der Knoten
+die Datei zurück. Sollte der gesuchte Schlüssel nicht vorhanden sein, wird
+der nächste Knoten aus der Routingtabelle genommen um die Request Nachricht
+weiterzuleiten. Dabei wird die die hops-to-live um eins verringert. Dieser
+Vorgang wiederholt sich solange bis der hops-to-live Wert auf null fällt.
+Kann ein Knoten einen Request nicht mehr weiterleiten, wird der vorherige
+Knoten benachrichtigt. Dieser sucht sich einen neuen Knoten aus der
+Routingtabelle und versendet den Request neu. Sollte der hops-to-live Wert auf
+null fallen und es wurde keine Datei mit dem Schlüssel gefunden, wird ein
+Fehlernachricht bis zum Anfang der Kette geleitet.
+Wird die Datei gefunden, wird dieser Hash in allen Knoten eingetragen, die
+bestandteil der Request Kette waren(Aussage nochmal prüfen).
 
 \subsection{Daten Verteilen}
 Verteilen von Daten ist ähnlich, wie das Empfangen von Daten. Der Nutzer
 berechnet den Hashwert für die Datei und versendet diese an den eigenen Knoten.
-Dieser überpüft, ob der Knoten diesen Hashwert beinhalten. Sollte das nicht
-der Fall sein, leitet es den Request weiter, bis der hop-to-live Wert
-aufgebraucht ist oder die Datei gefunden wurde. Sollte die Datei gefunden
-werden, bekommt der Requester die Fehlernachricht, dass es der Schlüssel schon
-vorhanden ist. Sollte die Datei nicht gefunden werden, wird die Datei in
-allen Knoten eingefügt, wo sie nachgefragt wurde. Sollte ein Knoten keine
-Speicherplatz für die neue Datei zu Verfügung haben, wird die Datei ersetzt,
-die am wenigsten abgerufen wurde.
-Freent stellt somit kein permanente Persitierung von Daten sicher.
-
+Dieser überpüft, ob der Hashwert schon vorhanden ist. Sollte das der Falle sein,
+kommt es zur Kollision und der Nutzer muss einen neuen Schlüssel berechnen.
+Sollte der Schlüssel nicht vorhanden sein, leitet der Knoten den Request
+weiter, bis der hop-to-live Wert aufgebraucht ist oder die Datei gefunden
+wurde. Sollte die Datei gefunden werden, kommt es wieder zur Kollision und die
+Fehlernachricht wird bis zum Initialknoten durchgereicht, der dann wieder einen
+neuen Schlüsseln berechnen muss. Sollte die Datei nicht gefunden werden, wird
+die Datei in allen Knoten eingefügt, die an der Request Kette beteiligt waren.
+Sollte ein Knoten kein Speicherplatz für die neue Datei zur Verfügung haben,
+wird die am wenigsten aufgerufene Datei ersetzt. Freent garantiert somit keine
+permanente Persitierung von Daten sicher.
