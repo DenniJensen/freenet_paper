@@ -1,78 +1,78 @@
 \section{Architektur}
-Ein Freenet Netzwerk besteht aus Nutzer Knoten, die ihren lokalen Speicher
-anderen Nutzern zur Verfügung stellen. Jeder Knoten hat einen direkten Nachbarn
-von dem gelesen wird und einen direkten Nachbarn zu dem Dateien verteilt
+Ein Freenet-Netzwerk besteht aus Nutzer-Knoten, die ihren lokalen Speicher
+anderen Nutzern zur Verfügung stellen. Jeder Knoten hat einen direkten Nachbarn,
+von dem gelesen wird und einen direkten Nachbarn, zu dem Dateien verteilt
 werden. Des Weiteren verwaltet jeder Knoten eine dynamische Routingtabelle.
-Jeder Routingtabelle beinhaltet die Adressen von Knoten und deren Schlüssel.
-Genutzt wird Freenet um die eigene Speicherkapazität zu erhöhen und um
+Jede Routingtabelle beinhaltet die Adressen von Knoten und deren Schlüssel.
+Genutzt wird Freenet, um die eigene Speicherkapazität zu erhöhen und um
 ungenutztem Speicher zur Verfügung zu stellen.
 
-Anfrage von Schlüsseln von Knoten zu Knoten erfolgt über eine Kette von
-Proxy-Requests, indem jeder Knoten entscheiden an wem der nächste Request geht.
+Anfragen für Schlüssel von Knoten zu Knoten erfolgen über eine Kette von
+Proxy-Requests, indem jeder Knoten entscheiden kann, an wen der nächste Request geht.
 Dieses Verfahren ähnelt dem IP-Routing. Jede Route ändert sich abhängig vom
-angefragtem Schlüssel.
-Um die Privatsphäre von Knoten zu unterstützen haben Knoten nur Informationen
-über den ummittelbaren Nachbarn(up- und downstream).
+angefragten Schlüssel.
+Um die Privatsphäre der Knoten zu unterstützen, haben diese nur Informationen
+über den ummittelbaren Nachbarn (up- und downstream).
 
-Jeder Request erhält einen hops-to-live Wert, der sich bei jedem angelangtem
-Knoten verringen. Dadurch werden Endlosschleifen vermieden.
-Jeder Request enthält eine Psuedo-uniq Zufalls-ID, um Endlossschleifen zu
+Jeder Request erhält einen hops-to-live Wert, der sich bei jedem erreichten
+Knoten verringert. Dadurch werden Endlosschleifen vermieden.
+Jeder Request enthält außerdem eine pseudo-unique Zufalls-ID, um Endlossschleifen zu
 verhindern. Jeder Request, der zum zweiten mal bei einem Knoten ankommt, fliegt
-raus. Es gibt keine Herachie der Knoten. Alle Knoten sind gleichgestellt
-im Freent.
+raus. Es gibt keine Herarchie der Knoten. Alle Knoten sind gleichgestellt
+im Freenet.
 
 \subsection{Schlüssel}
 Dateien im Freenet werden mit einem 160 Bit SHA-1 Schlüssel dargestellt.
-Freenet hat 3 verscheidene Schlüssel, die einen bestimmten Teil einer Datei
+Freenet hat 3 verschiedene Schlüssel, die einen bestimmten Teil einer Datei
 beschreiben.
 
 \subsubsection{KSK - Keyword-Signed-Key}
 Der Keyword-Signed-Key dient für die Beschreibung einer Datei im Freenet. Jeder
-Benutzer der eine Datei anlegt, wählt einen Text zur Idenfizierung diese
-Datei. Wie z.B.
+Benutzer, der eine Datei anlegt, wählt einen Text zur Idenfizierung dieser
+Datei, wie z.B.
 \begin{lstlisting}
 text/philosophy/sun-trz/art-of-war
 \end{lstlisting}
 Aus diesem Text wird deterministisch ein public-private Schlüsselpaar
-generiert. Der Public Schlüssel wird anschließend gehasht um den Dateischlüssel
-zu erhalten, der dann mit dem privatem Schlüssel signiert wird.  Der
-Dateischlüssel ist der Schlüssel mit der die Datei dargestellt wird. Dieser
-Schlüssel kann mit dem gewähltem Text erneut berechnet und gesucht werden.  Um
-anderen Nutzern den Zugriff auf die Datei zu gewähren, verschickt der Author
-der Datei den beschreibenden String. Keyword-Signed-Key sind so leicht zu
-merken.  Ein Problem bei dem Keyword-signed-Key ist der geringe Namespace,
-welcher dazu frühren kann, das unterschiedliche Datei die selbe Bezeichnung und
-dadruch den selben Dateischlüssel erhalten. Um das Problem mit der
-Nameskollidierung zu umgehen dient der Signed-Subsapce-Key
+generiert. Der Public Schlüssel wird anschließend gehasht, um den Dateischlüssel
+zu erhalten, der dann mit dem privaten Schlüssel signiert wird. Der
+Dateischlüssel ist der Schlüssel, mit der die Datei dargestellt wird. Dieser
+Schlüssel kann mit dem gewählten Text erneut berechnet und gesucht werden. Um
+anderen Nutzern den Zugriff auf die Datei zu gewähren, verschickt der Autor
+der Datei den beschreibenden String. Keyword-Signed-Keys sind so leicht zu
+merken. Ein Problem bei dem Keyword-Signed-Key ist der geringe Namespace,
+welcher dazu frühren kann, das unterschiedliche Dateien die selbe Bezeichnung und
+dadurch den selben Dateischlüssel erhalten. Um das Problem mit der
+Namenskollidierung zu umgehen dient der Signed-Subspace-Key.
 
-\subsubsection{SSK - Signed-Subsapce-Key}
+\subsubsection{SSK - Signed-Subspace-Key}
 Der Signed-Subspace-Key ist eine Erweiterung des KSK. SSK erweitert den
 Namespace und reduziert Kollisionen, wo zwei verschieden Dateien den
 selben Schlüssel erhalten können.
-Ein zufällig gewähltes assymetrisches Schlüsselpaar stellt den Namespace dar.
-Um eine Datei hinzuzufügen wählt der Nutzer ein beschreibenden Text. Der
-public Signed-Subsapce-Key und der beschreibende Text, werden unabhängig
+Ein zufällig gewähltes asymmetrisches Schlüsselpaar stellt den Namespace dar.
+Um eine Datei hinzuzufügen, wählt der Nutzer einen beschreibenden Text. Der
+public Signed-Subspace-Key und der beschreibende Text werden unabhängig
 voneinander gehasht, anschließend miteinander geXOR't und dann wieder gehasht.
 
 \subsubsection{CHK - Content-Hash-Key}
-Der Content-Hash-Key representiert den Inhalt der Datei in Form eines Hashes.
-Jede Datei erhält dadurch einen pseudo einzigartigen Schlüssel. Zusätzlich wird
-eine Datei mit einem zufällig generiertem Schlüssel verschlüsselt.
+Der Content-Hash-Key repräsentiert den Inhalt der Datei in Form eines Hashes.
+Jede Datei erhält dadurch einen pseudo-einzigartigen Schlüssel. Zusätzlich wird
+eine Datei mit einem zufällig generierten Schlüssel verschlüsselt.
 Um Zugriff auf die Datei zu ermöglichen, veröffentlicht der Nutzer den
 Content-Hash-Key und den dazu gehörigen Schlüssel zur Entschlüsselung.
 
-Eine Datei kann kann mit dem Content-Hash-Key durch den Author aktualisiert
+Eine Datei kann kann mit dem Content-Hash-Key durch den Autor aktualisiert
 werden. Dazu wird ein neuer Content-Hash-Key erzeugt und unter dem
-Signed-Subspace-Key abgelegt. Der neue Schlüssel muss sich vom Alten
-unterscheiden. Sollte die neue Datei einen Knoten ereichen, der noch auf die
+Signed-Subspace-Key abgelegt. Der neue Schlüssel muss sich vom alten
+unterscheiden. Sollte die neue Datei einen Knoten erreichen, der noch auf die
 alte Version verweist, ensteht eine Kollision, die dazu führt, dass der Knoten
 die Signatur der neuen Version überprüft, mit der alten Version validiert und
-auf die neue Version verweißt. Der Signed-Subspace-Key
+auf die neue Version verweist. Der Signed-Subspace-Key
 verweist immer auf die aktuellste Version der Datei. Die alte Version kann
 weiterhin erreicht werden, indem direkt der Content-Hash-Key der älteren
-Versioin angefragt wird.  Wird die ältere Version über einen bestimmten
+Version angefragt wird. Wird die ältere Version über einen bestimmten
 Zeitraum nicht mehr aufgerufen, kann diese vom Freenet entfernt werden.
 
-Eine weiter Funktion vom Content-Hash-Key ist das Aufteilen einer Datei
-in mehrere Teildatei, um z.B. große Daten mit weniger Bandbreite über das
+Eine weitere Funktion vom Content-Hash-Key ist das Aufteilen einer Datei
+in mehrere Teildateien, um z.B. große Daten mit weniger Bandbreite über das
 Netzwerk zu verschicken.
