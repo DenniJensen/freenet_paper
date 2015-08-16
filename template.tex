@@ -20,22 +20,24 @@
 \begin{@twocolumnfalse}
 \maketitle
 \begin{abstract}
-Verteiltes Dateisystem
-Anonymität vom Author und Leser
-keine Broadcast Suche und Zentralierte location oder indexe
-Dateien sind Ortsunabhängig beschrieben (dynamisch produziert und gelöscht)
-effizienter und dynamsicher Speicher und Routing
+Freenet ist ein Peer-To-Peer Overlay Netzwerk und dient für den anonymen
+Austausch von Dateien. Die Funktionweise von Freenet, die Umsetzung der
+Anonymität im Freenet, sowie der Aufbau von Freenet werden in dieser
+Ausarbeitung aufgeführt. Als Vorlage diente das Paper \cite{freenetpaper}.
 \vspace{4em}
 \end{abstract}
 \end{@twocolumnfalse}
 ]
 
 \section{Einleitung}
-Anonymität vom Author und Leser
-keine Broadcast Suche und Zentralierte location oder indexe
-Dateien sind Ortsunabhängig beschrieben (dynamisch produziert und gelöscht)
+Das Ziel von Freenet besteht den anonymen Austausch von Informationen zu
+ermöglichen und abzuspeichern.  Dieses Ziel soll durch Dezentralisierung,
+Redundanz, Verschlüsselung und dynamisches Routing erreicht werden.  Es wurde
+als freie Software unter der GNU General Public License entwickelt.
 
 \input{sections/architecture}
 \input{sections/data_exchange}
+\input{sections/protocol_details}
+\input{sections/security}
 \bibliography{bibliography}
 \end{document}
