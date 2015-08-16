@@ -1,5 +1,5 @@
-\section{Datenaustausch}
-\subsection{Daten empfangen}
+\subsection{Datenaustausch}
+\subsubsection{Daten empfangen}
 Um Daten im Freenet zu empfangen, wählt oder berechnet der Nutzer einen Hash.
 Dieser Hash wird dann als Request-Nachricht über eine Kette von Requests und
 mit einer gegebenen hops-to-live-Zahl versendet. Als Start dient der eigene Knoten.
@@ -15,9 +15,9 @@ Routingtabelle und versendet den Request neu. Sollte der hops-to-live-Wert auf
 null fallen und es wurde keine Datei mit dem Schlüssel gefunden, wird eine
 Fehlernachricht bis zum Anfang der Kette weitergeleitet.
 Wird die Datei gefunden, wird dieser Hash in allen Knoten eingetragen, die
-Bestandteil der Request-Kette waren (TODO Aussage nochmal prüfen).
+Bestandteil der Request-Kette waren.
 
-\subsection{Daten verteilen}
+\subsubsection{Daten verteilen}
 Verteilen von Daten ist ähnlich wie das Empfangen von Daten. Der Nutzer
 berechnet den Hashwert für die Datei und versendet diese an den eigenen Knoten.
 Dieser überpüft, ob der Hashwert schon vorhanden ist. Sollte das der Fall sein,
@@ -32,7 +32,7 @@ Sollte ein Knoten keinen Speicherplatz für die neue Datei verfügbar haben,
 wird die am wenigsten aufgerufene Datei ersetzt. Freenet garantiert somit keine
 permanente Persistierung von Daten sicher.
 
-\subsection{Daten verwalten}
+\subsubsection{Daten verwalten}
 Der Speicher eines Knotens wird als LRU (Last Recent Used) cache verwaltet.
 Die Dateien sind nach letzt genutzt sortiert. Kommt beim Knoten eine neue Datei
 zum speichern und der Speicher ist voll, wird die am wenigsten genutzte Datei
@@ -48,6 +48,23 @@ kompletten Netzwerk nicht mehr verfügbar.
 
 Wird eine veraltete Datei weiterhin genutzt, bleibt sie solange im Speicher,
 wie sie auch abgefragt wird. Jede Datei ist im Freenet verschlüsselt und
-benötigt einen Schlüssel zum Entschlüsseln.
+benötigt einen Schlüssel zum Entschlüsseln. Dieser Schlüssel ist völlig
+unabhängig von dem Content-Hash-Key.
 Ohne Schlüssel kennt der Betreiber den Inhalt der Datei nicht und ist somit
-rechtlich abgeschütz, da jedes Wissen vom Inhalt abgestritten werden kann.
+rechtlich abgeschützt, da jedes Wissen vom Inhalt abgestritten werden kann.
+
+\subsection{Knoten hinzufügen}
+Ein neuer Knoten wählt zufälligen Seed und verschickt diesen als Nachricht über
+das Freenet-Netzwerk. In dieser Ankündigungsnachricht ist die Adresse und dem
+Hash des Seeds des neuen Knoten enthalten.
+
+Bei Einkunft einer Ankündigung eines neuen Knotens, generiert der Empfänger
+einen zufälligen Seed, XOR'ed diesen mit dem empfangenem Hash und hasht das
+Ergebnis um eine Verbindlichkeit herzustellen. Danach leitet der Empfänger
+Knoten den neuen Hash zu einem zufällig gewähltem Knoten aus seiner eigenen
+Routingtabelle. Dieser Prozess wiederholt sich bis der hops-to-live Wert von
+der Ankündigung des neuen Knoten aufgebraucht ist.
+Der letzte Knoten, der die Ankündigungsnachricht empfängt, generiert nur einen
+Seed.
+Nach Überprüfung der Vereinbarungen in den jeweiligen Knoten, fügt jeder Knoten
+in der Kette den neuen Knoten in seine Routingtabelle ein.
